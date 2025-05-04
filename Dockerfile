@@ -10,10 +10,11 @@ ENV UV_COMPILE_BYTECODE=1
 
 # Copy pyproject.toml and lock file for dependencies
 COPY pyproject.toml uv.lock ./
+COPY README.md ./
 
 # Install the project's dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-install-project --no-dev --no-editable
+uv sync --frozen --no-install-project --no-dev --no-editable
 
 # Add the rest of the project source code and install it
 ADD src /app/src
@@ -28,8 +29,9 @@ FROM python:3.13-slim-bookworm
 WORKDIR /app
 
 # Copy virtual environment from the builder
-COPY --from=uv /root/.local /root/.local
+# COPY --from=uv /root/.local /root/.local
 COPY --from=uv --chown=app:app /app/.venv /app/.venv
+COPY data-platform-341216* ./
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"

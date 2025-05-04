@@ -1,0 +1,68 @@
+replicaCount: 1
+
+image:
+  repository: 376505705033.dkr.ecr.eu-west-1.amazonaws.com/base
+  pullPolicy: IfNotPresent
+  tag: 'mcp-bq-v1'
+
+cmd:
+  command: ["/bin/sh"]
+  args:
+    - -c
+    - "mcp-server-bigquery --project data-platform-341216 --location US --key-file data-platform-341216-key.json || tail -f /dev/null"
+
+imagePullSecrets: []
+nameOverride: ''
+fullnameOverride: ''
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ''
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+  containerPort: 8080
+
+ingress:
+  internal:
+    enabled: true
+    className: traefik-v3-internal
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production
+      # kubernetes.io/ingress.class: traefik-internal
+      kubernetes.io/tls-acme: 'false'
+      traefik.ingress.kubernetes.io/router.tls: 'false'
+    hosts:
+      - host: bq-mcp-server.snappy-internal.com
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+
+redirectscheme: false
+
+resources:
+  limits:
+    memory: 1.5Gi
+  requests:
+    cpu: 300m
+    memory: 400Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {} 

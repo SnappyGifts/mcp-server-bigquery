@@ -1,0 +1,8 @@
+apiVersion: v2
+name: mcp-server-bigquery
+description: A Helm chart for deploying the MCP BigQuery server
+
+type: application
+
+version: 0.1.0
+appVersion: '1.0.0' 

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mcp-server-bigquery.fullname" . }}
+  labels:
+    {{- include "mcp-server-bigquery.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "mcp-server-bigquery.selectorLabels" . | nindent 4 }}
