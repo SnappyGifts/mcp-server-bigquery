@@ -25,19 +25,21 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 FROM python:3.13-slim-bookworm
 
-# Set working directory
 WORKDIR /app
 
-# Copy virtual environment from the builder
-# COPY --from=uv /root/.local /root/.local
-COPY --from=uv --chown=app:app /app/.venv /app/.venv
-COPY data-platform-341216* ./
+# Copy requirements and install them
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Place executables in the environment at the front of the path
-ENV PATH="/app/.venv/bin:$PATH"
+# Copy the rest of the code
+COPY pyproject.toml uv.lock README.md ./
+ADD src /app/src
+COPY data-platform-* ./
 
-# Define the entry point
-ENTRYPOINT ["mcp-server-bigquery"]
+# Set PYTHONPATH so the src modules are importable
+ENV PYTHONPATH="/app/src"
+
+ENTRYPOINT ["python", "-m", "mcp_server_bigquery"]
 
 # Example command
 # CMD ["--project", "your-gcp-project-id", "--location", "your-gcp-location"]

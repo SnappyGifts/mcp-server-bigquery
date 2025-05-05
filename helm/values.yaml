@@ -3,13 +3,16 @@ replicaCount: 1
 image:
   repository: 376505705033.dkr.ecr.eu-west-1.amazonaws.com/base
   pullPolicy: IfNotPresent
-  tag: 'mcp-bq-v1'
+  tag: 'mcp-bq-v2'
 
 cmd:
-  command: ["/bin/sh"]
   args:
-    - -c
-    - "mcp-server-bigquery --project data-platform-341216 --location US --key-file data-platform-341216-key.json || tail -f /dev/null"
+    - "--project"
+    - "data-platform-341216"
+    - "--location"
+    - "US"
+    - "--key-file"
+    - "data-platform-341216-key.json"
 
 imagePullSecrets: []
 nameOverride: ''
@@ -28,7 +31,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8080
   containerPort: 8080
 
 ingress:
@@ -41,7 +44,7 @@ ingress:
       kubernetes.io/tls-acme: 'false'
       traefik.ingress.kubernetes.io/router.tls: 'false'
     hosts:
-      - host: bq-mcp-server.snappy-internal.com
+      - host: bq-mcp-server.snappy.internal
         paths:
           - path: /
             pathType: ImplementationSpecific
