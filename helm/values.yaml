@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: 376505705033.dkr.ecr.eu-west-1.amazonaws.com/base
   pullPolicy: IfNotPresent
-  tag: 'mcp-bq-v2'
+  tag: 'mcp-bq-v3'
 
 cmd:
   args:
